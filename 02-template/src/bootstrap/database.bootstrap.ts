@@ -17,14 +17,14 @@ export default class DataBaseBoostrap extends Bootstrap {
             const options = { maxPoolSize: 10 }
 
             mongoose.connect(url, options)
-            .then(()=>{
-                resolve(true)
-                console.log("Connected to Database")
-            })
-            .catch((err)=>{
-                reject(err)
-                console.log("Database is not connected")
-            });
+                .then(() => {
+                    resolve(true)
+                    console.log("Connected to Database")
+                })
+                .catch((err) => {
+                    reject(err)
+                    console.log("Database is not connected")
+                });
         })
     }
 }
