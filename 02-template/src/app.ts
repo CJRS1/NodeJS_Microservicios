@@ -4,6 +4,7 @@ import OrderRouter from './module/interface/http/order.router';
 import { OrderInfrastructure } from './module/infrastructure/order.infrastructure';
 import { OrderApplication } from './module/application/order.application';
 
+
 class App {
     private readonly expressApp: Application
 

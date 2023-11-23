@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import BrokerBootstrap from './bootstrap/broker.bootstrap';
 import DatabaseBootstrap from './bootstrap/database.bootstrap';
 import ServerBootstrap from './bootstrap/server.bootstrap';

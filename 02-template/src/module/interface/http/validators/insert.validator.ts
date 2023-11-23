@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsNumberString, IsString, IsUUID } from 'class-validator';
 
 export class InsertValidator {
+
   @IsNotEmpty()
   @IsString()
   @IsUUID()
@@ -11,6 +12,7 @@ export class InsertValidator {
   @IsNumberString()
   price: number;
 
+  @IsNotEmpty()
   @Type(() => Number)
   @IsNumberString()
   quantity: number;

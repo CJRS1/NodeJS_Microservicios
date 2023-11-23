@@ -8,6 +8,7 @@
     "joi": "^17.11.0",
     "mongoose": "^8.0.1",
     "neverthrow": "^6.1.0",
+    "reflect-metadata": "^0.1.13",
     "yenv": "^3.0.1"
   },
   "devDependencies": {
