@@ -1,0 +1,61 @@
+import express, { NextFunction, Request, Response } from 'express'
+import Controller from './auth.controller'
+import { BadRequestErrorException } from '../../../core/exceptions/badrequest.exception'
+import { validate } from 'class-validator'
+import { RegisterValidator } from './validators/register.validator'
+import { LoginValidator } from './validators/login.validator'
+import { TokenValidator } from './validators/token.validator'
+import { RefreshTokenValidator } from './validators/refresh-token.validator'
+
+
+export default class {
+
+    private readonly expressRouter: express.Router
+
+    constructor(private readonly controller: Controller) {
+        this.expressRouter = express.Router()
+        this.mountRoutes()
+    }
+
+    validator(instance: any) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            const body = req.body;
+            Object.assign(instance, body);
+            validate(instance).then((errors) => {
+                if (errors.length > 0) {
+                    throw new BadRequestErrorException(JSON.stringify(errors));
+                } else {
+                    next();
+                }
+            });
+        };
+    }
+
+    mountRoutes() {
+        this.expressRouter.post(
+            "/register",
+            this.validator(new RegisterValidator()),
+            this.controller.insertAuth
+        );
+        this.expressRouter.post(
+            "/login",
+            this.validator(new LoginValidator()),
+            this.controller.insertAuth
+        );
+        this.expressRouter.post(
+            "/validate-access-token",
+            this.validator(new TokenValidator()),
+            this.controller.insertAuth
+        );
+        this.expressRouter.post(
+            "/fet-new-accesss-token",
+            this.validator(new RefreshTokenValidator()),
+            this.controller.insertAuth
+        );
+    }
+
+    get router() {
+        return this.expressRouter
+    }
+
+}
