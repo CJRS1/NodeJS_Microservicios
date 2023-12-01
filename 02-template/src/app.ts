@@ -3,6 +3,7 @@ import Controller from './module/interface/http/order.controller';
 import OrderRouter from './module/interface/http/order.router';
 import { OrderInfrastructure } from './module/infrastructure/order.infrastructure';
 import { OrderApplication } from './module/application/order.application';
+import { BrokerInfrastructure } from './module/infrastructure/broker.infrastructure';
 
 
 class App {
@@ -22,7 +23,8 @@ class App {
 
     mountRoutes() {
         const infrastructure = new OrderInfrastructure()
-        const application = new OrderApplication(infrastructure)
+        const broker = new BrokerInfrastructure();
+        const application = new OrderApplication(infrastructure, broker)
         const controller = new Controller(application)
         const router = new OrderRouter(controller)
 

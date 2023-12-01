@@ -2,17 +2,27 @@ import { Auth } from "./auth";
 import { v4 as uuidv4 } from 'uuid';
 
 export class AuthFactory {
+
+    static patternEmail: string = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"
     /* static sirve para usar esat clase sin crear una instancia */
-    static create(productId: string, price: number, quantity: number): Auth {
-        if (price <= 0) {
-            throw new Error("Price has to great than zero");
+    static async create(
+        name: string,
+        email: string,
+        password: string): Promise<Auth> {
+        if (name.trim().length < 3) {
+            throw new Error("Name must be at least 3 characters long");
         }
 
-        if (quantity <= 0) {
-            throw new Error("Quantity has to great than zero");
+        if (!email.match(AuthFactory.patternEmail)) {
+            throw new Error("Invalid email");
         }
 
-        const transactionId = uuidv4()
-        return new Auth(transactionId, productId, price, quantity);
+        if (password.trim().length < 6) {
+            throw new Error("Password must be at least 6 characters long");
+        }
+
+        const id = uuidv4()
+        const refreshToken = uuidv4()
+        return new Auth(id, name, email, password, refreshToken);
     }
 }

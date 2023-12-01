@@ -1,4 +1,4 @@
-// export type STATUS = "PENDING" | "APPROVED" | "REJECTED";/*  */
+export type STATUS = "PENDING" | "APPROVED" | "REJECTED";/*  */
 
 export class Payment {
     private readonly transactionId: string;
@@ -9,6 +9,7 @@ export class Payment {
     private updatedAt?: Date;
     private deletedAt?: Date;
     private active: boolean;
+    private status: STATUS;
 
     constructor(
         transactionId: string,
@@ -22,7 +23,7 @@ export class Payment {
         this.quantity = quantity;
         this.createdAt = new Date();
         this.active = true;
-        // this.status = "PENDING";
+        this.status = "PENDING";
     }
 
     properties() {

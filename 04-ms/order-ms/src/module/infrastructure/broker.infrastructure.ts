@@ -14,7 +14,7 @@ export class BrokerInfrastructure implements BrokerRepository {
     const channel = BrokerBootstrap.channel;
     const exchangeName = process.env.EXCHANGE_NAME || "exchange-order";
     const exchangeType = process.env.EXCHANGE_TYPE || "fanout";
-    const routingKey = process.env.ROUTING_KEY || "*.order";
+    const routingKey = process.env.ROUTING_KEY || "";
 
     return await ReceiveMessageService.orderConfirmed(
       channel,

@@ -3,7 +3,6 @@ import DatabaseBootstrap from './bootstrap/database.bootstrap';
 import ServerBootstrap from './bootstrap/server.bootstrap';
 import { AuthInfrastructure } from "./module/infrastructure/auth.infrastructure";
 import { AuthApplication } from "./module/application/auth.application";
-import BrokerController from './module/interface/broker/broker.controller';
 
 const server = new ServerBootstrap();
 const database = new DatabaseBootstrap();
@@ -14,7 +13,6 @@ const authApplication = new AuthApplication(
     authInfrastructure
 );
 
-const brokerController = new BrokerController(authApplication);
 
 (async () => {
     try {

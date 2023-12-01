@@ -1,3 +1,5 @@
+export type STATUS = "PENDING" | "APROVED" | "REJECTED"
+
 export class Order {
     private readonly transactionId: string;
     private readonly productId: string;
@@ -7,6 +9,7 @@ export class Order {
     private updatedAt?: Date;
     private deletedAt?: Date;
     private active: boolean;
+    private status: STATUS;
 
     constructor(
         transactionId: string,
@@ -20,6 +23,7 @@ export class Order {
         this.quantity = quantity;
         this.createdAt = new Date();
         this.active = true;
+        this.status = "PENDING";
     }
 
     properties() {

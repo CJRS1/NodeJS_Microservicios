@@ -1,5 +1,4 @@
 import { err, ok, Result } from 'neverthrow'
-
 import { IError } from '../../core/exceptions/error.exception'
 import { PaymentRepository } from '../domain/repositories/payment.repository'
 import Model from './models/payment.model'

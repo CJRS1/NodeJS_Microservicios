@@ -1,0 +1,58 @@
+import BrokerBootstrap from "../../bootstrap/broker.bootstrap";
+import { BrokerRepository } from "../domain/repositories/broker.repository";
+import Model from './models/delivery.model';
+import ReceiveMessageService from "./services/receive-message.service";
+import UtilsBrokerService from "./services/utils-broker.service";
+
+export class BrokerInfrastructure implements BrokerRepository {
+  async sent(message: unknown): Promise<any> {
+    const channel = BrokerBootstrap.channel;
+    const exchangeName = process.env.EXCHANGE_NAME || "exchange-order";
+    const exchangeType = process.env.EXCHANGE_TYPE || "fanout";
+    const routingKey = process.env.ROUTING_KEY || "";
+
+    await channel.assertExchange(exchangeName, exchangeType, { durable: true });
+
+    /* Aqui se le envia a todos */
+    channel.publish(
+      exchangeName,
+      routingKey,
+      Buffer.from(JSON.stringify(message))
+    );
+  }
+  async receive(): Promise<any> {
+    const channel = BrokerBootstrap.channel;
+    const queueName =
+      process.env.QUEUE_NAME_RECEIVE_ORDER || "queue-order-created";
+    await ReceiveMessageService.accept(
+      channel,
+      queueName,
+      this.consumerAccept.bind(this)
+    );
+  }
+
+  async consumerAccept(message: any) {
+    const content = JSON.parse(message.content.toString());
+    content.status = "APPROVED";
+    await Model.create(content);
+        /* PAra que los mensajes no se dupliquen y se a */
+    UtilsBrokerService.confirmMessage(BrokerBootstrap.channel, message);
+    this.sent(content);
+  }
+
+  async consumerDeliveryConfirmed(message: any) {
+    const messageParse = JSON.parse(message.content.toString());
+    console.log("Delivery confirmed: ", messageParse);
+    const { transactionId } = messageParse;
+
+    const order = await Model.findOne({ transactionId });
+
+    if (order) {
+      await Model.updateOne({ transactionId }, { status: "APPROVED" });
+    }
+
+    console.log("Order confirmed: ", transactionId);
+
+    BrokerBootstrap.channel.ack(message);
+  }
+}

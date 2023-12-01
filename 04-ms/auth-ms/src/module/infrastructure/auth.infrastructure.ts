@@ -8,7 +8,7 @@ import { Auth } from '../domain/entities/auth'
 export type AuthResult = Result<Auth, IError>
 
 export class AuthInfrastructure implements AuthRepository {
-    async save(auth: Auth): Promise<AuthResult> {
+    async register(auth: Auth): Promise<AuthResult> {
         try {
             await Model.create(auth);
             return ok(auth);

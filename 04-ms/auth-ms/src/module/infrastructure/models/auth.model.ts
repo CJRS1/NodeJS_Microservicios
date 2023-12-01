@@ -5,40 +5,24 @@ class AuthModel {
 
   constructor() {
     this.authSchema = new mongoose.Schema({
-      transactionId: {
+      id:{
+        type: String,
+        required: true
+      },
+      name: {
         type: String,
         required: true,
       },
-      productId: {
+      email: {
         type: String,
         required: true,
       },
-      price: {
-        type: Number,
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        required: true,
-      },
-      updatedAt: {
-        type: Date,
-        required: false,
-      },
-      deletedAt: {
-        type: Date,
-        required: false,
-      },
-      status: {
+      password: {
         type: String,
         required: true,
       },
-      active: {
-        type: Boolean,
+      refreshToken: {
+        type: String,
         required: true,
       },
     });

@@ -4,13 +4,14 @@ const axios = require("axios");
 
 router.get("/message", async (req, res) => {
   const messages = {
-    msg01: "Hello from backend1",msg02: "Hello from backend2",
+    msg01: "Hello from backend1xd",msg02: "",
   };
 
   const path =
     process.env.SERVICE_BACKEND2 || "http://localhost:19020/api/message";
 
   const response = await axios.get(path);
+
   messages.msg02 = response.data.message;
 
   res.json(messages);

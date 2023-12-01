@@ -1,4 +1,4 @@
-import { OrderApplication } from '../../application/auth.application';
+import { OrderApplication } from '../../application/order.application';
 
 export default class {
     constructor(private readonly orderApplication: OrderApplication) { }

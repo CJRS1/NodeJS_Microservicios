@@ -2,5 +2,11 @@ import { AuthResult } from '../../infrastructure/auth.infrastructure';
 import { Auth } from '../entities/auth';
 
 export interface AuthRepository {
-    save(auth: Auth): Promise<AuthResult>;
+    register(auth: Auth): Promise<AuthResult>;
+    // findOne(where: { [s: string]: string | number }): Promise<any>;
+}
+
+export interface Tokens {
+    accessToken: string;
+    refreshToken: string;
 }
