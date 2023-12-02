@@ -40,17 +40,17 @@ export default class {
         this.expressRouter.post(
             "/login",
             this.validator(new LoginValidator()),
-            // this.controller.insertAuth
+            this.controller.login
         );
         this.expressRouter.post(
             "/validate-access-token",
             this.validator(new TokenValidator()),
-            // this.controller.insertAuth
+            this.controller.validateAccessToken
         );
         this.expressRouter.post(
-            "/fet-new-accesss-token",
+            "/get-new-accesss-token",
             this.validator(new RefreshTokenValidator()),
-            // this.controller.insertAuth
+            this.controller.getNewAccesToken
         );
     }
 

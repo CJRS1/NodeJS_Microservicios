@@ -1,3 +1,4 @@
+import AuthAppService from "../../application/auth.service";
 import { Auth } from "./auth";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -22,7 +23,8 @@ export class AuthFactory {
         }
 
         const id = uuidv4()
-        const refreshToken = uuidv4()
-        return new Auth(id, name, email, password, refreshToken);
+        const refreshToken = AuthAppService.generateRefreshToken()
+        const passwordHash = await AuthAppService.cipherPassword(password)
+        return new Auth(id, name, email, passwordHash, refreshToken);
     }
 }
