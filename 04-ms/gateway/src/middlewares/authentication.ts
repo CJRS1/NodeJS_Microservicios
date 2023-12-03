@@ -12,10 +12,11 @@ const isFormatRight = (req: Request): boolean => {
   const parts = req.headers.authorization.split(" ");
   return parts?.length !== 2 || parts[0] !== "Bearer" ? false : true;
 };
+/* Para que la ruta sea Authenticated Bearer */
 
 const isAccessTokenValid = async (req: Request): Promise<boolean> => {
   const accessToken = req.headers.authorization.split(" ")[1];
-
+  console.log("el accestoken es", accessToken);
   const request: any = {
     method: "POST",
     url: `${AppService.PATH_AUTH}/auth/validate-access-token`,
@@ -25,8 +26,10 @@ const isAccessTokenValid = async (req: Request): Promise<boolean> => {
 
   try {
     const result = await axios(request);
+    // console.log("result", result);
     console.log("result.data", result.data);
-    return result.data?.valid ? true : false;
+    console.log("v o f", !!result.data?.id && !!result.data?.name);
+    return result.status === 200 ? true : false;
   } catch (error) {
     console.log("error", error);
     console.log("devuelve false");
@@ -54,13 +57,13 @@ export const authentication = async (
   next: NextFunction
 ) => {
   if (!existsHeaderAuthorization(req) || !isFormatRight(req)) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized xd" });
   }
 
   console.log("existe la cabecera");
 
-  if (!isAccessTokenValid(req)) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (!(await isAccessTokenValid(req))) {
+    return res.status(401).json({ message: "Unauthorized x" });
   }
 
   console.log("el token es válido");

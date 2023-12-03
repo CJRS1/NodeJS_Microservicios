@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import express, { NextFunction, Request, Response } from 'express';
-
 import { authentication } from './middlewares/authentication';
 import AppService from './services/app.service';
 

@@ -1,4 +1,4 @@
-export default class {
+export default class AppService{
   static get PORT(): number {
     return +process.env.PORT || 3000;
   }

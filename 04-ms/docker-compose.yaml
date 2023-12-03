@@ -12,8 +12,8 @@ services:
         - BASE_DIR=order-ms
     env_file:
       - ./order-ms/.env
-    ports:
-      - "3500:3500"
+    # ports:
+    #   - "3500:3500"
     networks:
       - net-ms
     depends_on:
@@ -31,8 +31,8 @@ services:
         - BASE_DIR=payment-ms
     env_file:
       - ./payment-ms/.env
-    ports:
-      - "3600:3600"
+    # ports:
+    #   - "3600:3600"
     networks:
       - net-ms
     depends_on:
@@ -50,8 +50,8 @@ services:
         - BASE_DIR=store-ms
     env_file:
       - ./store-ms/.env
-    ports:
-      - "3700:3700"
+    # ports:
+    #   - "3700:3700"
     networks:
       - net-ms
     depends_on:
@@ -69,14 +69,14 @@ services:
         - BASE_DIR=delivery-ms
     env_file:
       - ./delivery-ms/.env
-    ports:
-      - "3800:3800"
+    # ports:
+    #   - "3800:3800"
     networks:
       - net-ms
     depends_on:
       - mongo-delivery
       - rabbitmq
-      
+
   mongo-order:
     image: mongo:3.6
     container_name: mongo-order
@@ -137,20 +137,20 @@ services:
     networks:
       - net-ms
 
-  # mongo-auth:
-  #   image: mongo:3.6
-  #   container_name: mongo-auth
-  #   restart: always
-  #   ports:
-  #     - 27021:27017
-  #   volumes:
-  #     - mongo-vol-auth:/data/db
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: root
-  #     MONGO_INITDB_DATABASE: test
-  #   networks:
-  #     - net-ms
+  mongo-auth:
+    image: mongo:3.6
+    container_name: mongo-auth
+    restart: always
+    ports:
+      - 27021:27017
+    volumes:
+      - mongo-vol-auth:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: test
+    networks:
+      - net-ms
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -186,28 +186,30 @@ services:
       - order-ms
       - rabbitmq
 
-  # auth-ms:
-  #   container_name: auth-ms
-  #   image: auth-ms
-  #   restart: always
-  #   build:
-  #     context: .
-  #     dockerfile: auth-ms/Dockerfile
-  #     args:
-  #       - BASE_DIR=auth-ms
-  #   env_file:
-  #     - ./auth-ms/.env
-  #   networks:
-  #     - net-ms
-  #   depends_on:
-  #     - mongo-auth    
+  auth-ms:
+    container_name: auth-ms
+    image: auth-ms
+    restart: always
+    build:
+      context: .
+      dockerfile: auth-ms/Dockerfile
+      args:
+        - BASE_DIR=auth-ms
+    env_file:
+      - ./auth-ms/.env
+    networks:
+      - net-ms
+    depends_on:
+      - mongo-auth    
 
 volumes:
   mongo-vol-order:
   mongo-vol-payment:
   mongo-vol-store:
   mongo-vol-delivery:
-  # mongo-vol-auth:
+  mongo-vol-auth:
 
 networks:
   net-ms:
+
+#Como el gateaway va a hacer la conexion a todos los ms entonces noe s necesario que los ms lleven un puerto
