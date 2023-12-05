@@ -20,6 +20,23 @@ export class BrokerInfrastructure implements BrokerRepository {
       Buffer.from(JSON.stringify(message))
     );
   }
+
+  async sentError(message: unknown): Promise<any> {
+    const channel = BrokerBootstrap.channel;
+    const exchangeName = process.env.EXCHANGE_NAME_REJECT || "exchange-reject";
+    const exchangeType = process.env.EXCHANGE_TYPE_REJECT || "topic";
+    const routingKey = process.env.ROUTING_KEY_REJECT || "delivery.error";
+
+    console.log("Sent error: ", message);
+
+    await channel.assertExchange(exchangeName, exchangeType, { durable: true });
+    channel.publish(
+      exchangeName,
+      routingKey,
+      Buffer.from(JSON.stringify(message))
+    );
+  }
+
   async receive(): Promise<any> {
     const channel = BrokerBootstrap.channel;
     const queueName =
@@ -35,9 +52,9 @@ export class BrokerInfrastructure implements BrokerRepository {
     const content = JSON.parse(message.content.toString());
     content.status = "APPROVED";
     await Model.create(content);
-        /* PAra que los mensajes no se dupliquen y se a */
+    /* PAra que los mensajes no se dupliquen y se a */
     UtilsBrokerService.confirmMessage(BrokerBootstrap.channel, message);
-    this.sent(content);
+    this.sentError(content);
   }
 
   async consumerDeliveryConfirmed(message: any) {

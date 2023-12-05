@@ -5,13 +5,14 @@ import ReceiveMessageService from "./services/receive-message.service";
 import UtilsBrokerService from "./services/utils-broker.service";
 
 export class BrokerInfrastructure implements BrokerRepository {
+
   async sent(message: unknown): Promise<unknown> {
     const channel = BrokerBootstrap.channel;
     const queueName = process.env.QUEUE_NAME || "store";
     await channel.assertQueue(queueName, { durable: true });
     return channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)));
   }
-  
+
   async receive(): Promise<any> {
     const channel = BrokerBootstrap.channel;
     const queueName =
@@ -21,6 +22,8 @@ export class BrokerInfrastructure implements BrokerRepository {
       queueName,
       this.consumerAccept.bind(this)
     );
+
+    
 
     const exchangeName = process.env.EXCHANGE_NAME || "exchange-order";
     const exchangeType = process.env.EXCHANGE_TYPE || "fanout";
@@ -40,6 +43,15 @@ export class BrokerInfrastructure implements BrokerRepository {
     await Model.create(content);
     UtilsBrokerService.confirmMessage(BrokerBootstrap.channel, message);
     this.sent(content);
+  }
+
+  async consumerReject(message: any) {
+    const content = JSON.parse(message.content.toString());
+    await Model.updateOne(
+      { transactionId: content.transactionId },
+      { status: "CANCELLED" }
+    );
+    UtilsBrokerService.confirmMessage(BrokerBootstrap.channel, message);
   }
 
   async consumerOrderConfirmed(message: any) {
