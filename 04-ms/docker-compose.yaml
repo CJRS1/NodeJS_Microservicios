@@ -82,7 +82,7 @@ services:
     container_name: mongo-order
     restart: always
     ports:
-      - 27017:27017
+      - 27022:27017
     volumes:
       - mongo-vol-order:/data/db
     environment:

@@ -13,6 +13,20 @@ export class BrokerInfrastructure implements BrokerRepository {
     return channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)));
   }
 
+  async sentError(message: unknown): Promise<any> {
+    const channel = BrokerBootstrap.channel;
+    const exchangeName = process.env.EXCHANGE_NAME_REJECT || "exchange-reject";
+    const exchangeType = process.env.EXCHANGE_TYPE_REJECT || "topic";
+    const routingKey = process.env.ROUTING_KEY_REJECT || "store.error";
+
+    await channel.assertExchange(exchangeName, exchangeType, { durable: true });
+    channel.publish(
+      exchangeName,
+      routingKey,
+      Buffer.from(JSON.stringify(message))
+    );
+  }
+
   async receive(): Promise<any> {
     const channel = BrokerBootstrap.channel;
     const queueName =
@@ -23,13 +37,23 @@ export class BrokerInfrastructure implements BrokerRepository {
       this.consumerAccept.bind(this)
     );
 
-    
+    const exchangeNameReject = process.env.EXCHANGE_NAME_REJECT || "exchange-reject";
+    const exchangeTypeReject = process.env.EXCHANGE_TYPE_REJECT || "topic";
+    const routingKeyReject = process.env.ROUTING_KEY_REJECT || "delivery.error";
+
+    await ReceiveMessageService.orderConfirmedOrRejected(
+      channel,
+      this.consumerReject.bind(this),
+      exchangeNameReject,
+      exchangeTypeReject,
+      routingKeyReject
+    );
 
     const exchangeName = process.env.EXCHANGE_NAME || "exchange-order";
     const exchangeType = process.env.EXCHANGE_TYPE || "fanout";
     const routingKey = process.env.ROUTING_KEY || "";
 
-    return await ReceiveMessageService.orderConfirmed(
+    return await ReceiveMessageService.orderConfirmedOrRejected(
       channel,
       this.consumerOrderConfirmed.bind(this),
       exchangeName,
